@@ -25,7 +25,8 @@ let initialState = {
         totalPage: 1
     }
 }
-
+//việc trả về state hay initialState phụ thuộc hoàn toàn vào cách lấy dữ liệu
+//nếu muốn làm app nhẹ thì trả về state để tại mỗi trang chỉ lấy đủ dữ liệu cần thiết, ko lấy dữ liệu của các trang khác(suggest-khuyến nghị)
 export default function PostReducer(state = initialState, action) {
     let totalPage, begin, end, search
     switch (action.type) {
