@@ -34,9 +34,6 @@ function Switch(props) {
             <Route path="/login" exact>
                 <Login />
             </Route>
-            <Route path="/register" exact>
-                <Register />
-            </Route>
         </SwitchPage>
     )
 }

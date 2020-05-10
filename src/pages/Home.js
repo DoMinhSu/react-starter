@@ -6,9 +6,9 @@ import { Link, useLocation, useHistory } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { list } from '../apis/postApi'
 import qs from 'qs'
-import { isEmpty, isNil } from 'lodash'
+import { isEmpty, isUndefined } from 'lodash'
 import Pagination from '../common/Pagination/Pagination'
-
+import { useTranslation } from 'react-i18next';
 //imrse import usestate/effect
 // có thể lấy query string page từ url react router dom sau đó gán vào state khi componentDidMount để phân trang có thể bấm nút back or next page của trình duyệt cùng với componentDidUpdate
 const Home = memo((props) => {
@@ -17,7 +17,7 @@ const Home = memo((props) => {
 
     const dispatch = useDispatch()
     const { search, pathname } = useLocation()
-
+    const { t, i18n } = useTranslation();
 
 
     let [page, setpage] = useState(1)
@@ -27,6 +27,14 @@ const Home = memo((props) => {
     const history = useHistory()
 
 
+    // let pageFromUrl;
+    // const getOriginalQueryString = search.slice(1)
+
+    // const hasQueryString = !isEmpty(qs.parse(getOriginalQueryString)) ? true : false
+
+    // if (hasQueryString) pageFromUrl = qs.parse(getOriginalQueryString).page
+    // if (pageFromUrl === undefined || pageFromUrl === '') pageFromUrl = 1
+    // if (page !== parseInt(pageFromUrl)) page = parseInt(pageFromUrl)
 
 
 
@@ -34,38 +42,54 @@ const Home = memo((props) => {
         const keyword = e.target.value
         setsearchText((prev) => keyword)
     }
-    function find() {
-        if (searchText != '') {
-            history.push(`/search?keyword=${searchText}`)
-            setsearchText('')
-        }
-    }
+    // function find() {
+    //     if (searchText != '') {
+    //         history.push(`/search?keyword=${searchText}`)
+    //         setsearchText('')
+    //     }
+    // }
     useEffect(() => {
-        // (async () => {
-        //     const data = await list().then((response) => {
-        //         console.log(response.data);
-        //         dispatch({ type: 'SET_DATA_POST', SET_DATA: response.data })
-        //         dispatch({ type: 'GET_BY_PAGE', page: page })
-        //     })
-        // })()
         (async () => {
+            let pageFromUrl
+            const getOriginalQueryString = search.slice(1)
+
+            const hasQueryString = !isEmpty(qs.parse(getOriginalQueryString)) ? true : false
+            const qsJson = qs.parse(getOriginalQueryString)
+            const pageTemp = parseInt(qsJson.page)
+
+            if (hasQueryString && !isUndefined(pageTemp)) {
+                pageFromUrl = pageTemp
+                setpage(pageTemp)
+            }
+
             const data = await list()
             dispatch({ type: 'SET_DATA_POST', SET_DATA: data.data })
-            dispatch({ type: 'GET_BY_PAGE', page: page })
+            dispatch({ type: 'GET_BY_PAGE', page: pageTemp || page })
 
         })()
     }, [])
-
+    useEffect(() => {
+        dispatch({ type: 'GET_BY_PAGE', page: page })
+    }, [page])
 
     const handleChangePage = (page) => {
         setpage(page)
-        dispatch({ type: 'GET_BY_PAGE', page: page })
     }
 
     return (
         <div>
             <input name="search" onChange={handleChangeSearchText} /> <br />
-            <p onClick={find}>redirect with push</p>
+            {/* <button onClick={find}>{t('search')}</button> */}
+            <Link
+                to={{
+                    pathname: "/search",
+                    search: `?keyword=${searchText}`,
+                    state:{
+                        searchLink: `?keyword=${searchText}`
+                    }
+                }}
+                children={<button>{t('search')}</button>}
+            />
             {/* <Link
                 to={{
                     pathname: "/search",
@@ -88,6 +112,7 @@ const Home = memo((props) => {
                 currentPage={page}
                 pageCount={7}
                 handleChangePage={handleChangePage}
+                isRedirect={true}
             />
         </div>
     )
