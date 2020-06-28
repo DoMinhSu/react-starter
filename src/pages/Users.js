@@ -137,7 +137,7 @@ function Users(props) {
             setisUpdate(true)
         })
     }
-    const handleUpdateUser = async (e) => () {
+    const handleUpdateUser = () => async (e) {
         e.preventDefault();
         const res = await updateUser(formUpdateData.id, { name: formUpdateData.name, username: formUpdateData.username, website: formUpdateData.website })
         console.log(res.data);
