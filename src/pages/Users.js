@@ -137,7 +137,7 @@ function Users(props) {
             setisUpdate(true)
         })
     }
-    const handleUpdateUser = () => async (e) {
+    const handleUpdateUser = (e) => async () {
         e.preventDefault();
         const res = await updateUser(formUpdateData.id, { name: formUpdateData.name, username: formUpdateData.username, website: formUpdateData.website })
         console.log(res.data);
@@ -231,7 +231,7 @@ function Users(props) {
                         <input name="username" value={formUpdateData.username} onChange={handleChangeFormUpdate} />
                         <input name="website" value={formUpdateData.website} onChange={handleChangeFormUpdate} />
                         <input name="name" value={formUpdateData.name} onChange={handleChangeFormUpdate} />
-                        <button onClick={handleUpdateUser} children={t('author.update')} />
+                        <button onClick={(e)=>handleUpdateUser(e)} children={t('author.update')} />
                     </div>
                 )
             }
