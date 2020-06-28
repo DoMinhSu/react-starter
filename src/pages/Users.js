@@ -230,7 +230,7 @@ function Users(props) {
                         <input name="username" value={formUpdateData.username} onChange={handleChangeFormUpdate} />
                         <input name="website" value={formUpdateData.website} onChange={handleChangeFormUpdate} />
                         <input name="name" value={formUpdateData.name} onChange={handleChangeFormUpdate} />
-                        <button onClick={handleUpdateUser} type="submit" children={t('author.update')} />
+                        <button onClick={handleUpdateUser} children={t('author.update')} />
                     </div>
                 )
             }
